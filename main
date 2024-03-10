@@ -28,7 +28,8 @@ epsilon = 2.22*10**-16
 xc = np.sqrt(abs(np.sin(x)/(np.gradient(np.gradient(np.sin(x),x),x))))
 h1 = np.sqrt(epsilon)*xc
 """ This value for h was calculated using the method in 5.7 of NR, however, through trial and error
-I have found that the value of h above gives a much lower error. """
+I have found that the value of h above gives a much lower error. You guys can look over this 
+calculation if you want. """
 
 #Implement the two-point formula
 derivatives = y_prime(x,h,y)
