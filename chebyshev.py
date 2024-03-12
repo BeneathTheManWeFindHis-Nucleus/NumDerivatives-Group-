@@ -4,6 +4,7 @@ using Chebyshev methods in part a)."""
 
 import numpy as np
 import matplotlib.pyplot as plt
+import math
 from scipy.special import roots_chebyt
 from numpy.polynomial import Chebyshev as T
 
@@ -25,7 +26,7 @@ def coefficients(N,k,j,y):      #Find coefficients
 
 #Initialize everything
 n = 11                  #Order of the Chebyshev polynomial
-N = n + 1               #Number of coefficients needed
+N = n + 1              #Number of coefficients needed
 k = np.arange(N)
 j = np.arange(N)
 print()
@@ -60,9 +61,11 @@ plt.title('Chebyshev Interpolation for Sin(x)')
 plt.grid(True)
 plt.show()
 
-#Calculate the derivative of the approximation
+#Calculate the derivative of the approximation and its error
 p_prime = p.deriv()
 y_cheby_prime = p_prime(roots)
+mean_deriv_error = np.sum(np.cos(roots) - y_cheby_prime)/(len(roots))
+print(f"The mean error in the derivative of the {n}-order Chebyshev approximation is: {mean_deriv_error}.")
 
 #Plot the derivative of the approximation vs cos(x)
 plt.figure(figsize=(10, 6))
