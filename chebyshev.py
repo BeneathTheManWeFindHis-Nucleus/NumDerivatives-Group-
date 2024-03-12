@@ -25,7 +25,7 @@ def coefficients(N,k,j,y):      #Find coefficients
 
 #Initialize everything
 n = 11                  #Order of the Chebyshev polynomial
-N = n + 1              #Number of coefficients needed
+N = n + 1               #Number of coefficients needed
 k = np.arange(N)
 j = np.arange(N)
 print()
