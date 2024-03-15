@@ -1,6 +1,11 @@
 import numpy as np
 from scipy.fftpack import dct
 
+def f(x):
+    return np.sin(1/x)
+
+x = np.linspace(-1,1,100)
+
 def chebyshev(f,x):
     def chebyshev_nodes(n):
         """Compute Chebyshev nodes."""
@@ -70,3 +75,5 @@ def chebyshev(f,x):
     plt.show()
 
     return 
+
+result = chebyshev(f,x)
