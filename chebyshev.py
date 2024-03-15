@@ -86,7 +86,7 @@ plt.grid(True)
 plt.show() 
 print()
 
-def chebyshev(f,x):
+def chebyshev1(f,x):
     #start_time = time.time()
     n = 13
     N = n + 1
@@ -134,5 +134,5 @@ def chebyshev(f,x):
     
     return f_cheby_prime
    
-cheb = chebyshev(f,x)
+cheb = chebyshev1(f,x)
 
