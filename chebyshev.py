@@ -52,7 +52,7 @@ def chebyshev(f,x):
     derivative = np.gradient(approximation,x)
 
     # Plot the original function and its approximation
-    import matplotlib.pyplot as plt
+    # import matplotlib.pyplot as plt
 
     # plt.figure(figsize=(8, 6))
     # plt.plot(x_vals, f(x_vals), label='f(x)', color='blue')
@@ -64,16 +64,16 @@ def chebyshev(f,x):
     # plt.grid(True)
     # plt.show()
 
-    plt.figure(figsize=(8, 6))
-    plt.plot(x, np.gradient(f(x),x), label='Derivative', color='blue')
-    plt.plot(x, derivative, label='Derivative Approximation', linestyle='--', color='red')
-    plt.title('Chebyshev Approximation of derivative')
-    plt.xlabel('x')
-    plt.ylabel('f(x)')
-    plt.legend()
-    plt.grid(True)
-    plt.show()
+    # plt.figure(figsize=(8, 6))
+    # plt.plot(x, np.gradient(f(x),x), label='Derivative', color='blue')
+    # plt.plot(x, derivative, label='Derivative Approximation', linestyle='--', color='red')
+    # plt.title('Chebyshev Approximation of derivative')
+    # plt.xlabel('x')
+    # plt.ylabel('f(x)')
+    # plt.legend()
+    # plt.grid(True)
+    # plt.show()
 
-    return 
+    return derivative
 
 #result = chebyshev(f,x)
