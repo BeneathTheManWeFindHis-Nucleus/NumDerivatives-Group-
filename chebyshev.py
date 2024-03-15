@@ -1,138 +1,75 @@
-""" This is the main script for problem 2 of the Numerical Derivatives Group
-homework. For my portion, I will attempt to approximate a numerical derivative
-using Chebyshev methods in part a)."""
-
 import numpy as np
-import matplotlib.pyplot as plt
-import math
-import time
-from scipy.special import roots_chebyt
-from numpy.polynomial import Chebyshev as T
+from scipy.fftpack import dct
 
-#Define functions
-def f(x):                         #Function to be approximated
-    return np.sin(x)
+def chebyshev(f,x):
+    def chebyshev_nodes(n):
+        """Compute Chebyshev nodes."""
+        k = np.arange(1, n+1)
+        return np.cos((2*k - 1) * np.pi / (2*n))
 
-a = -np.pi                     #Determine domain
-b = np.pi
+    def chebyshev_coefficients(f_values):
+        """Compute Chebyshev coefficients using DCT."""
+        n = len(f_values) - 1
+        c = dct(f_values, type=1) / n
+        c[0] /= 2
+        return c
 
-def coefficients(N,k,j,f):      #Find coefficients
-    coeffs = []
-    for j_val in j:
-        c_j = 0
-        for k_val in k:
-            eval_at = np.cos((np.pi*(k_val+.5))/N)
-            c_j += f(eval_at)*(np.cos((np.pi*j_val*(k_val+.5))/N))
-        c_j = c_j * (2 / N)
-        if j_val == 0:
-            c_j = c_j/2
-        coeffs.append(c_j)
-        print(f"c{j_val} = {c_j}") 
-    return coeffs
+    def evaluate_chebyshev_polynomial(x, coefficients):
+        """Evaluate Chebyshev polynomial at point x."""
+        n = len(coefficients) - 1
+        T = np.zeros((len(x), n+1))
+        T[:, 0] = 1
+        T[:, 1] = x
+        for k in range(2, n+1):
+            T[:, k] = 2 * x * T[:, k-1] - T[:, k-2]
+        return np.dot(T, coefficients)
 
-#Initialize everything
-n = 13                  #Order of the Chebyshev polynomial
-N = n + 1               #Number of coefficients needed
-k = np.arange(N)
-j = np.arange(N)
-print()
+    # Define the function to approximate
+    #f = lambda x: np.sin(1/x)
 
-#Find Roots
-roots, _ = roots_chebyt(n)
-print(f"Roots of the Chebyshev polynomial of degree {n}:\n{roots}")
-print()
+    # Define the interval
+    a, b = x[0], x[-1]
 
-#Find coefficients
-print(f"The coefficients of the {n}-order polynomial are:")
-coeffs = coefficients(N,k,j,f)
-print()
-# Define the interval
-a = -np.pi
-b = np.pi
-x = (roots + 1) * (b - a) / 2 + a   # Map roots from [-1, 1] to [-π, π]
+    # Choose the degree of polynomial
+    degree = 1000
 
-#Generate polynomial and evaluate it at the roots     
-p = T(coeffs)
-f_cheby = p(x) - (.5*coeffs[0])
+    # Compute Chebyshev nodes
+    nodes = chebyshev_nodes(degree)
 
-#Plot the approximation
-plt.figure(figsize=(10, 6))
-plt.plot(x, f_cheby, marker='o', linestyle = '-', label='Chebyshev Approximation')
-plt.plot(x, np.sin(x), linestyle='--',label='Sine Function')
-plt.legend()
-plt.xticks(np.arange(-np.pi, np.pi+0.1, np.pi/2), [r'$-\pi$', r'$-\pi/2$', '0', r'$\pi/2$', r'$\pi$'])
-plt.xlabel('x')
-plt.ylabel('f(x)')
-plt.title('Chebyshev Interpolation for Sin(x)')
-plt.grid(True)
-plt.show()
+    # Evaluate the function at Chebyshev nodes
+    f_values = f((b - a) / 2 * nodes + (a + b) / 2)
 
-#Calculate the derivative of the approximation and its error
-p_prime = p.deriv()
-f_cheby_prime = p_prime(x)
-mean_deriv_error = abs(np.sum(np.cos(x) - f_cheby_prime)/n)
-print(f"The mean error in the derivative of the {n}-order Chebyshev approximation is: {mean_deriv_error}.")
+    # Compute Chebyshev coefficients
+    coefficients = chebyshev_coefficients(f_values)
 
-#Plot the derivative of the approximation vs cos(x)
-plt.figure(figsize=(10, 6))
-plt.plot(x, f_cheby_prime, marker='o', linestyle = '-', label='Chebyshev Derivative Approximation')
-plt.plot(x, np.cos(x), linestyle='--',label='Cosine Function')
-plt.legend()
-plt.xticks(np.arange(-np.pi, np.pi+0.1, np.pi/2), [r'$-\pi$', r'$-\pi/2$', '0', r'$\pi/2$', r'$\pi$'])
-plt.xlabel('x')
-plt.ylabel('f(x)')
-plt.title('Derivative of Chebyshev Interpolation for Sin(x)')
-plt.grid(True)
-plt.show() 
-print()
+    # Define points for evaluation
+    x_vals = np.linspace(a, b, 100)
 
-def chebyshev1(f,x):
-    #start_time = time.time()
-    n = 13
-    N = n + 1
-   
-    k = np.arange(N)               #Find coeffiecients
-    j = np.arange(N) 
-    coeffs = []
-    for j_val in j:
-        c_j = 0
-        for k_val in k:
-            eval_at = np.cos((np.pi*(k_val+.5))/N)
-            c_j += f(eval_at)*(np.cos((np.pi*j_val*(k_val+.5))/N))
-        c_j = c_j * (2 / N)
-        coeffs.append(c_j)
-        
-    roots, _ = roots_chebyt(n)        #Find roots, determine domain
-    a = x[0]
-    b = x[-1]
-    x = (roots + 1) * (b - a) / 2 + a
-    
-    p = T(coeffs)                  #Determine Chebyshev polynomial and first derivative
-    f_cheby = p(x)
-    p_prime = p.deriv()
-    f_cheby_prime = p_prime(x)
-    
-    mean_deriv_error = abs(np.sum(np.gradient(f(x),x) - f_cheby_prime)/n)   #Determine error
-    #mean_deriv_error = abs(np.sum(np.cos(roots) - f_cheby_prime)/n) If true derivative is known, plug it in
-    print(f"The mean error in the derivative of the {n}-order Chebyshev approximation is: {mean_deriv_error}.")
+    # Evaluate approximation at these points
+    approximation = evaluate_chebyshev_polynomial((2 * x_vals - (a + b)) / (b - a), coefficients)
+    derivative = np.gradient(approximation,x_vals)
 
-    #Plot the Chebyshev derivative vs the actual derivative
-    plt.figure(figsize=(10, 6))
-    plt.plot(x, f_cheby_prime, marker='o', linestyle = '-', label='Chebyshev Derivative Approximation')
-    plt.plot(x, np.gradient(f(x),x), linestyle='--',label=f'Derivative of Arbitrary Function: f(x)')
-    plt.legend()
+    # Plot the original function and its approximation
+    import matplotlib.pyplot as plt
+
+    # plt.figure(figsize=(8, 6))
+    # plt.plot(x_vals, f(x_vals), label='f(x)', color='blue')
+    # plt.plot(x_vals, approximation, label='Chebyshev Approximation', linestyle='--', color='red')
+    # plt.title('Chebyshev Approximation of a function')
+    # plt.xlabel('x')
+    # plt.ylabel('f(x)')
+    # plt.legend()
+    # plt.grid(True)
+    # plt.show()
+
+    plt.figure(figsize=(8, 6))
+    plt.plot(x_vals, np.gradient(f(x_vals),x_vals), label='Derivative', color='blue')
+    plt.plot(x_vals, derivative, label='Derivative Approximation', linestyle='--', color='red')
+    plt.title('Chebyshev Approximation of derivative')
     plt.xlabel('x')
-    plt.ylabel('y')
-    plt.title('Derivative of Chebyshev Interpolation for Arbitrary Function')
+    plt.ylabel('f(x)')
+    plt.legend()
     plt.grid(True)
-    
-    #end_time = time.time()
-    #execution_time = end_time - start_time
-    #print("Execution time:", execution_time, "seconds")
+    plt.show()
 
-    plt.show() 
-    
-    return f_cheby_prime
-   
-cheb = chebyshev1(f,x)
-
+    return 
