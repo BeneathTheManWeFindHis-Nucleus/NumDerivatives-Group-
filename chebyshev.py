@@ -85,7 +85,7 @@ plt.show()
 print()
 
 def chebyshev(f,x):
-    start_time = time.time()
+    #start_time = time.time()
     n = 100
     N = n + 1
    
@@ -115,18 +115,18 @@ def chebyshev(f,x):
     print(f"The mean error in the derivative of the {n}-order Chebyshev approximation is: {mean_deriv_error}.")
 
     #Plot the Chebyshev derivative vs the actual derivative
-    plt.figure(figsize=(10, 6))
-    plt.plot(x, f_cheby_prime, marker='o', linestyle = '-', label='Chebyshev Derivative Approximation')
-    plt.plot(x, np.gradient(f(roots),roots), linestyle='--',label=f'Derivative of Arbitrary Function: f(x)')
-    plt.legend()
-    plt.xlabel('x')
-    plt.ylabel('y')
-    plt.title('Derivative of Chebyshev Interpolation for Arbitrary Function')
-    plt.grid(True)
+    # plt.figure(figsize=(10, 6))
+    # plt.plot(x, f_cheby_prime, marker='o', linestyle = '-', label='Chebyshev Derivative Approximation')
+    # plt.plot(x, np.gradient(f(roots),roots), linestyle='--',label=f'Derivative of Arbitrary Function: f(x)')
+    # plt.legend()
+    # plt.xlabel('x')
+    # plt.ylabel('y')
+    # plt.title('Derivative of Chebyshev Interpolation for Arbitrary Function')
+    # plt.grid(True)
     
-    end_time = time.time()
-    execution_time = end_time - start_time
-    print("Execution time:", execution_time, "seconds")
+    #end_time = time.time()
+    #execution_time = end_time - start_time
+    #print("Execution time:", execution_time, "seconds")
 
     plt.show() 
     
