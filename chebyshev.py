@@ -84,7 +84,7 @@ plt.grid(True)
 plt.show() 
 print()
 
-def chebyshev(f,a,b):
+def chebyshev(f,x):
     start_time = time.time()
     n = 100
     N = n + 1
@@ -101,6 +101,8 @@ def chebyshev(f,a,b):
         coeffs.append(c_j)
         
     roots, _ = roots_chebyt(n)        #Find roots, determine domain
+    a = x[0]
+    b = x[-1]
     x = (roots + 1) * (b - a) / 2 + a
     
     p = T(coeffs)                  #Determine Chebyshev polynomial and first derivative
@@ -130,5 +132,5 @@ def chebyshev(f,a,b):
     
     return f_cheby_prime
    
-cheb = chebyshev(f,a,b)
+cheb = chebyshev(f,x)
 
