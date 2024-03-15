@@ -42,12 +42,9 @@ def chebyshev(f,x):
     # Compute Chebyshev coefficients
     coefficients = chebyshev_coefficients(f_values)
 
-    # Define points for evaluation
-    x_vals = np.linspace(a, b, 100)
-
     # Evaluate approximation at these points
-    approximation = evaluate_chebyshev_polynomial((2 * x_vals - (a + b)) / (b - a), coefficients)
-    derivative = np.gradient(approximation,x_vals)
+    approximation = evaluate_chebyshev_polynomial((2 * x - (a + b)) / (b - a), coefficients)
+    derivative = np.gradient(approximation,x)
 
     # Plot the original function and its approximation
     import matplotlib.pyplot as plt
@@ -63,8 +60,8 @@ def chebyshev(f,x):
     # plt.show()
 
     plt.figure(figsize=(8, 6))
-    plt.plot(x_vals, np.gradient(f(x_vals),x_vals), label='Derivative', color='blue')
-    plt.plot(x_vals, derivative, label='Derivative Approximation', linestyle='--', color='red')
+    plt.plot(x, np.gradient(f(x),x), label='Derivative', color='blue')
+    plt.plot(x, derivative, label='Derivative Approximation', linestyle='--', color='red')
     plt.title('Chebyshev Approximation of derivative')
     plt.xlabel('x')
     plt.ylabel('f(x)')
